@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/jpeg" href="imgs/logo2.png">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Amr arts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Work+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0e1013;
+    --ink-soft:#15181d;
+    --canvas:#f2ede3;
+    --canvas-dim:#c9c2b3;
+    --brass:#c69a5b;
+    --brass-dim:#8a6f47;
+    --line:rgba(242,237,227,0.14);
+  }
+
+  a{
+    color: var(--brass);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass-dim);
+    transition: opacity 0.25s ease, color 0.25s ease;
+  }
+
+  a:visited{
+    color: var(--brass); /* prevents the default purple "visited" color */
+  }
+
+  a:hover,
+  a:focus-visible{
+    opacity: 0.75;
+  }
+
+  *{ margin:0; padding:0; box-sizing:border-box; }
+
+  html,body{ height:100%; }
+
+  body{
+    background:var(--ink);
+    color:var(--canvas);
+    font-family:'Work Sans', sans-serif;
+    font-weight:300;
+    overflow-x:hidden;
+    position:relative;
+  }
+
+  /* subtle canvas grain */
+  body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    opacity:0.05;
+    z-index:1;
+    background-image:
+      radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+      radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px);
+    background-size: 3px 3px, 5px 5px;
+  }
+
+  header{
+    position:sticky;
+    top:0;
+    z-index:10;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:2.2rem 3rem;
+    border-bottom:1px solid var(--line);
+    background:var(--ink);
+  }
+
+  .wordmark{
+    font-family:'Fraunces', serif;
+    font-size:1.15rem;
+    letter-spacing:0.04em;
+    font-weight:500;
+  }
+
+  .wordmark span{ color:var(--brass); font-style:italic; }
+
+  nav{
+    display:flex;
+    gap:2.5rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.7rem;
+    letter-spacing:0.12em;
+    text-transform:uppercase;
+    color:var(--canvas-dim);
+  }
+
+  nav a{ color:inherit; text-decoration:none; border-bottom:none; transition:color 0.25s ease; }
+  nav a:hover, nav a:focus-visible{ color:var(--brass); opacity:1; }
+
+  main{
+    position:relative;
+    z-index:2;
+    min-height:calc(100vh - 88px);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    padding:4rem 1.5rem 6rem;
+  }
+
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem;
+    letter-spacing:0.28em;
+    text-transform:uppercase;
+    color:var(--brass);
+    margin-bottom:1.6rem;
+  }
+
+  .eyebrow::before{ content:"— "; }
+  .eyebrow::after{ content:" —"; }
+
+  h1{
+    font-family:'Fraunces', serif;
+    font-weight:300;
+    font-size:clamp(2.6rem, 7vw, 5.8rem);
+    line-height:1.05;
+    letter-spacing:-0.01em;
+    max-width:16ch;
+  }
+
+  h1 em{
+    font-style:italic;
+    font-weight:500;
+    color:var(--brass);
+  }
+
+  .sub{
+    margin-top:1.6rem;
+    max-width:38ch;
+    color:var(--canvas-dim);
+    font-size:1.02rem;
+    line-height:1.6;
+  }
+
+  /* signature element: museum-label frame around the CTA */
+  .frame{
+    position:relative;
+    margin-top:3.4rem;
+    padding:0.6rem;
+  }
+
+  .frame .corner{
+    position:absolute;
+    width:16px;
+    height:16px;
+    border:1.5px solid var(--brass);
+  }
+  .frame .corner.tl{ top:0; left:0; border-right:none; border-bottom:none; }
+  .frame .corner.tr{ top:0; right:0; border-left:none; border-bottom:none; }
+  .frame .corner.bl{ bottom:0; left:0; border-right:none; border-top:none; }
+  .frame .corner.br{ bottom:0; right:0; border-left:none; border-top:none; }
+
+  /* glassy, glowing button */
+  .btn{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:0.7rem;
+    background:rgba(242,237,227,0.06);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:var(--canvas);
+    border:1px solid rgba(198,154,91,0.4);
+    padding:1rem 2.4rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.78rem;
+    letter-spacing:0.16em;
+    text-transform:uppercase;
+    text-decoration:none;
+    cursor:pointer;
+    box-shadow:0 0 0px rgba(198,154,91,0);
+    transition: background 0.35s ease, color 0.35s ease,
+                border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  .btn:visited{ color:var(--canvas); }
+
+  .btn::after{
+    content:"→";
+    transition: transform 0.3s ease;
+  }
+
+  .btn:hover, .btn:focus-visible{
+    background:rgba(198,154,91,0.16);
+    color:var(--brass);
+    border-color:var(--brass);
+    box-shadow:0 0 22px rgba(198,154,91,0.45),
+               0 0 46px rgba(198,154,91,0.18);
+    outline:none;
+    opacity:1;
+  }
+
+  .btn:hover::after, .btn:focus-visible::after{
+    transform:translateX(4px);
+  }
+
+  footer{
+    position:relative;
+    z-index:2;
+    text-align:center;
+    padding:1.6rem;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.68rem;
+    letter-spacing:0.08em;
+    color:var(--canvas-dim);
+    border-top:1px solid var(--line);
+  }
+
+  @media (max-width: 640px){
+    header{ padding:1.6rem; }
+    nav{ display:none; }
+    main{ padding:3rem 1.2rem 4rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .btn, .btn::after{ transition:none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">amr <span>arts</span></div>
+  <nav>
+    <a href="gallery.html">Gallery</a>
+    <a href="https://www.instagram.com/saif.l0l/">Web developer</a>
+    <a href="https://www.instagram.com/amr_art_101/">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <div class="eyebrow">Graphic designer</div>
+  <h1>Welcome to <em>Amr</em> arts</h1>
+  <p class="sub">Graphic Designer | Poster & Visual Design
+Turning ideas into bold visuals.</p>
+
+  <div class="frame">
+    <span class="corner tl"></span>
+    <span class="corner tr"></span>
+    <span class="corner bl"></span>
+    <span class="corner br"></span>
+    <a class="btn" href="gallery.html">View Gallery</a>
+  </div>
+
+</main>
+
+<footer>
+  © 2026 <a href="https://www.instagram.com/amr_art_101/" target="_blank"><strong>Amr Arts</strong></a> — All works reserved
+</footer>
+
+</body>
+</html>

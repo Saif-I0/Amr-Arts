@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="icon" type="image/png" href="logo2.png">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Amr arts</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;1,9..144,400&family=Work+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+  
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <style>
+    :root{
+      --ink:#0e1013;
+      --ink-soft:#15181d;
+      --canvas:#f2ede3;
+      --canvas-dim:#c9c2b3;
+      --brass:#c69a5b;
+      --brass-dim:#8a6f47;
+      --line:rgba(242,237,227,0.14);
+    }
+
+    *{ margin:0; padding:0; box-sizing:border-box; }
+    html,body{ height:100%; }
+
+    body{
+      background:var(--ink);
+      color:var(--canvas);
+      font-family:'Work Sans', sans-serif;
+      font-weight:300;
+      overflow-x:hidden;
+      position:relative;
+    }
+
+    body::before{
+      content:"";
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      opacity:0.05;
+      z-index:1;
+      background-image:
+        radial-gradient(circle at 20% 30%, #fff 0.5px, transparent 0.5px),
+        radial-gradient(circle at 70% 60%, #fff 0.5px, transparent 0.5px);
+      background-size: 3px 3px, 5px 5px;
+    }
+
+    /* ---- Glassmorphic Fixed Header ---- */
+    header {
+      position: fixed; 
+      top: 0;
+      left: 0;
+      right: 0;
+      width: 100%;
+      z-index: 1000; 
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1.8rem 3rem;
+      border-bottom: 1px solid rgba(242, 237, 227, 0.1);
+      background: rgba(14, 16, 19, 0.75);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .wordmark{
+      font-family:'Fraunces', serif;
+      font-size:1.15rem;
+      letter-spacing:0.04em;
+      font-weight:500;
+    }
+    .wordmark span{ color:var(--brass); font-style:italic; }
+
+    nav{
+      display:flex;
+      gap:2.5rem;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.7rem;
+      letter-spacing:0.12em;
+      text-transform:uppercase;
+      color:var(--canvas-dim);
+    }
+    nav a{ color:inherit; text-decoration:none; border-bottom:none; transition:color 0.25s ease; }
+    nav a:hover, nav a:focus-visible{ color:var(--brass); }
+    nav a.active{ color:var(--brass); }
+
+    main{
+      position:relative;
+      z-index:2;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      padding:7rem 1.5rem 1rem;
+      text-align:center;
+    }
+
+    .eyebrow{
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.72rem;
+      letter-spacing:0.28em;
+      text-transform:uppercase;
+      color:var(--brass);
+      margin-bottom:1.6rem;
+    }
+    .eyebrow::before{ content:"— "; }
+    .eyebrow::after{ content:" —"; }
+
+    h1{
+      font-family:'Fraunces', serif;
+      font-weight:300;
+      font-size:clamp(2.2rem, 6vw, 4.4rem);
+      line-height:1.05;
+      letter-spacing:-0.01em;
+    }
+
+    h1 em{
+      font-style:italic;
+      font-weight:500;
+      color:var(--brass);
+    }
+
+    /* ---- Contact Notes ---- */
+    .contact-note {
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 1rem;
+      color: var(--canvas-dim);
+    }
+
+    .contact-note a {
+      color: var(--brass);
+      text-decoration: none;
+      border-bottom: none !important;
+      font-size: 18px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      transition: transform 0.2s ease, opacity 0.25s ease;
+    }
+
+    .contact-note a:hover {
+      transform: scale(1.08);
+      opacity: 0.85;
+    }
+
+    /* ---- Global Link Defaults ---- */
+    a{
+      color: var(--brass);
+      text-decoration: none;
+      transition: opacity 0.25s ease, color 0.25s ease;
+    }
+
+    a:visited{
+      color: var(--brass);
+    }
+
+    /* ---- Gallery Feed ---- */
+    .gallery-wrap{
+      position:relative;
+      z-index:2;
+      width:100%;
+      max-width:640px;
+      margin:2rem auto 4rem;
+      padding:0 1.2rem;
+    }
+
+    .gallery-feed{
+      display:flex;
+      flex-direction:column;
+      gap:2.6rem;
+      padding:0.5rem 0.6rem 1rem;
+    }
+
+    .poster{
+      position:relative;
+      width:100%;
+      aspect-ratio: 1 / 1;
+      border-radius:22px;
+      border:1px solid var(--line);
+      background:var(--ink-soft);
+      overflow:hidden;
+      flex-shrink:0;
+    }
+
+    .poster-img{
+      width:100%;
+      height:100%;
+      object-fit:cover;
+      display:block;
+      cursor: pointer;
+    }
+
+    .poster-label{
+      margin-top:0.8rem;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.7rem;
+      letter-spacing:0.1em;
+      text-transform:uppercase;
+      color:var(--canvas-dim);
+      text-align:left;
+    }
+
+    /* ---- In-Page Preview Lightbox Modal ---- */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .modal.show {
+      display: flex;
+      opacity: 1;
+    }
+
+    .modal-content {
+      max-width: 90vw;
+      max-height: 85vh;
+      object-fit: contain;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      transform: scale(0.9);
+      transition: transform 0.3s ease;
+    }
+
+    .modal.show .modal-content {
+      transform: scale(1);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: #fff;
+      font-size: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      z-index: 2001;
+    }
+
+    .close-btn:hover {
+      background: rgba(255, 255, 255, 0.25);
+      transform: scale(1.1);
+    }
+
+    footer{
+      position:relative;
+      z-index:2;
+      text-align:center;
+      padding:1.6rem;
+      font-family:'IBM Plex Mono', monospace;
+      font-size:0.68rem;
+      letter-spacing:0.08em;
+      color:var(--canvas-dim);
+      border-top:1px solid var(--line);
+    }
+
+    footer a { border-bottom: none; }
+
+    /* ---- Multi-Image Carousel Frame ---- */
+    .poster-carousel {
+      position: relative;
+      width: 100%;
+    }
+
+    .carousel-track {
+      display: flex;
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-behavior: smooth;
+      border-radius: 22px;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .carousel-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .carousel-track .poster-img {
+      flex: 0 0 100%;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      scroll-snap-align: start;
+      object-fit: cover;
+      border-radius: 22px;
+    }
+
+    /* ---- Glowing Circular Glassy Arrow Buttons ---- */
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(242, 237, 227, 0.06);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      color: var(--canvas);
+      border: 1px solid rgba(198, 154, 91, 0.4);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 0px rgba(198, 154, 91, 0);
+      transition: background 0.35s ease, color 0.35s ease, border-color 0.35s ease, box-shadow 0.35s ease, opacity 0.35s ease, filter 0.35s ease;
+    }
+
+    .carousel-btn.prev { left: -58px; }
+    .carousel-btn.next { right: -58px; }
+
+    .carousel-btn:hover, .carousel-btn:focus-visible {
+      background: rgba(198, 154, 91, 0.16);
+      color: var(--brass);
+      border-color: var(--brass);
+      box-shadow: 0 0 22px rgba(198, 154, 91, 0.45), 0 0 46px rgba(198, 154, 91, 0.18);
+      outline: none;
+    }
+
+    /* Inactive Edge State (Subtle muted look) */
+    .carousel-btn.disabled {
+      opacity: 0.35;
+      filter: grayscale(100%);
+    }
+
+    /* Red Error Pulse when reaching end/start */
+    .carousel-btn.error-flash,
+    .carousel-btn.disabled:active {
+      border-color: #ff4d4d !important;
+      color: #ff4d4d !important;
+      background: rgba(255, 77, 77, 0.2) !important;
+      box-shadow: 0 0 22px rgba(255, 77, 77, 0.6) !important;
+      opacity: 1 !important;
+      filter: none !important;
+      animation: shake 0.3s ease-in-out;
+    }
+
+    @keyframes shake {
+      0%, 100% { transform: translateY(-50%) translateX(0); }
+      25% { transform: translateY(-50%) translateX(-5px); }
+      75% { transform: translateY(-50%) translateX(5px); }
+    }
+
+    /* ---- Modal Navigation Arrows ---- */
+    .modal-nav {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 2002;
+    }
+
+    .modal-nav.prev { left: 2rem; }
+    .modal-nav.next { right: 2rem; }
+
+    @media (max-width: 768px) {
+      .carousel-btn.prev { left: -15px; }
+      .carousel-btn.next { right: -15px; }
+    }
+
+    @media (max-width: 640px){
+      header{ padding:1.2rem 1.6rem; }
+      nav{ display:none; }
+      main{ padding:5.5rem 1.2rem 1rem; }
+      .close-btn { top: 1rem; right: 1rem; width: 40px; height: 40px; font-size: 16px; }
+      .modal-nav.prev { left: 0.8rem; }
+      .modal-nav.next { right: 0.8rem; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">amr <a href="index.html"><span>arts</span></a></div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="gallery.html" class="active">Gallery</a>
+    <a href="https://www.instagram.com/amr_art_101/" target="_blank">Contact</a>
+  </nav>
+</header>
+
+<main>
+  <div class="eyebrow">Graphic Designer | Poster & Visual</div>
+  <h1>Amr arts <em>collection</em></h1>
+
+  <p class="contact-note">
+    Contact us for business: 
+    <a href="https://www.instagram.com/amr_art_101/" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+      <i class="fa-brands fa-instagram"></i>
+    </a>
+    <a href="https://wa.me/qr/DBJY2R5KTBMFB1" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp">
+      <i class="fa-brands fa-whatsapp"></i> 
+    </a>
+  </p>
+
+  <p class="contact-note">
+    Web developer: 
+    <a href="https://www.instagram.com/saif.l0l/" target="_blank" rel="noopener noreferrer" title="Follow Developer" aria-label="Developer Instagram">
+      <i class="fa-brands fa-instagram"></i> 
+    </a>
+  </p>
+</main>
+
+<div class="gallery-wrap">
+  <div class="gallery-feed">
+
+    <div>
+      <div class="poster">
+        <img class="poster-img" src="FIGHT CLUB.jpg" alt="Fight Club" onclick="openModal(this)">
+      </div>
+      <p class="poster-label">A cinematic poster design inspired by Fight Club, where colors, composition, and visual elements are carefully crafted to capture the film’s dark atmosphere and intense identity. 🧼🥊</p>
+    </div>
+    
+    <div>
+      <div class="poster">
+        <img class="poster-img" src="POLO Perfume.jpg" alt="POLO Perfume" onclick="openModal(this)">
+      </div>
+      <p class="poster-label">Timeless elegance in every detail. A personal poster concept inspired by one of the most iconic fragrances.</p>
+    </div>
+
+    <div>
+      <div class="poster">
+        <img class="poster-img" src="BMW.jpg" alt="BMW" onclick="openModal(this)">
+      </div>
+      <p class="poster-label">The all-new BMW M5 (G90) blends hybrid technology with iconic M performance, delivering 727 hp and 1,000 Nm without losing its aggressive character.</p>
+    </div>
+
+    <div>
+      <div class="poster">
+        <img class="poster-img" src="Smart watch.jpg" alt="Smart watch" onclick="openModal(this)">
+      </div>
+      <p class="poster-label">A modern smartwatch promotional poster focused on highlighting the product through clean composition, bold typography, and eye-catching visuals.</p>
+    </div>
+
+    <div>
+      <div class="poster-carousel">
+        <button class="carousel-btn prev disabled" id="prevBtn1" onclick="slideCarousel('track1', -1, 'prevBtn1', 'nextBtn1', event)" aria-label="Previous image">
+          <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <div class="poster" id="track1">
+          <div class="carousel-track">
+            <img class="poster-img" src="fight club.jpg" alt="Description 1" onclick="openModal(this)">
+            <img class="poster-img" src="POLO Perfume.jpg" alt="Description 2" onclick="openModal(this)">
+            <img class="poster-img" src="BMW.jpg" alt="Description 3" onclick="openModal(this)">
+          </div>
+        </div>
+
+        <button class="carousel-btn next" id="nextBtn1" onclick="slideCarousel('track1', 1, 'prevBtn1', 'nextBtn1', event)" aria-label="Next image">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+      <p class="poster-label">Poster caption.</p>
+    </div>
+
+  </div>
+</div> 
+
+<footer>
+  <p>© 2026 Designed & built by <a href="https://www.instagram.com/saif.l0l/" target="_blank" title="Follow me">Saif Ashraf</a> — All rights reserved.</p>
+</footer>
+
+<!-- Lightbox Modal Container -->
+<div id="imageModal" class="modal" onclick="closeModal()">
+  <button class="close-btn" onclick="closeModal()" aria-label="Close preview">
+    <i class="fa-solid fa-xmark"></i>
+  </button>
+
+  <button class="carousel-btn prev modal-nav" id="modalPrevBtn" onclick="event.stopPropagation(); slideModal(-1, event)" aria-label="Previous preview image">
+    <i class="fa-solid fa-arrow-left"></i>
+  </button>
+
+  <img id="modalImg" class="modal-content" src="" alt="Full Preview" onclick="event.stopPropagation()">
+
+  <button class="carousel-btn next modal-nav" id="modalNextBtn" onclick="event.stopPropagation(); slideModal(1, event)" aria-label="Next preview image">
+    <i class="fa-solid fa-arrow-right"></i>
+  </button>
+</div>
+
+<script>
+  let currentModalImages = [];
+  let currentModalIndex = 0;
+
+  function slideCarousel(trackId, direction, prevBtnId, nextBtnId, evt) {
+    const track = document.getElementById(trackId).querySelector('.carousel-track');
+    const prevBtn = document.getElementById(prevBtnId);
+    const nextBtn = document.getElementById(nextBtnId);
+    const targetBtn = evt ? evt.currentTarget : (direction === -1 ? prevBtn : nextBtn);
+    
+    const imageWidth = track.clientWidth;
+    const maxScrollLeft = track.scrollWidth - track.clientWidth;
+    const currentScroll = track.scrollLeft;
+
+    if (direction === -1 && currentScroll <= 5) {
+      triggerRedFlash(targetBtn);
+      return;
+    }
+    if (direction === 1 && currentScroll >= maxScrollLeft - 5) {
+      triggerRedFlash(targetBtn);
+      return;
+    }
+
+    track.scrollBy({ left: direction * imageWidth, behavior: 'smooth' });
+
+    setTimeout(() => {
+      updateCarouselButtons(track, prevBtn, nextBtn);
+    }, 350);
+  }
+
+  function triggerRedFlash(button) {
+    if (!button) return;
+    button.classList.remove('error-flash');
+    void button.offsetWidth; // Force re-trigger CSS animation
+    button.classList.add('error-flash');
+    setTimeout(() => {
+      button.classList.remove('error-flash');
+    }, 400);
+  }
+
+  function updateCarouselButtons(track, prevBtn, nextBtn) {
+    const maxScrollLeft = track.scrollWidth - track.clientWidth;
+    const currentScroll = track.scrollLeft;
+
+    if (currentScroll <= 10) {
+      prevBtn.classList.add('disabled');
+    } else {
+      prevBtn.classList.remove('disabled');
+    }
+
+    if (currentScroll >= maxScrollLeft - 10) {
+      nextBtn.classList.add('disabled');
+    } else {
+      nextBtn.classList.remove('disabled');
+    }
+  }
+
+  function openModal(clickedImg) {
+    const modal = document.getElementById('imageModal');
+    const modalImg = document.getElementById('modalImg');
+    
+    const carouselTrack = clickedImg.closest('.carousel-track');
+    
+    if (carouselTrack) {
+      currentModalImages = Array.from(carouselTrack.querySelectorAll('.poster-img')).map(img => img.src);
+      currentModalIndex = currentModalImages.indexOf(clickedImg.src);
+    } else {
+      currentModalImages = [clickedImg.src];
+      currentModalIndex = 0;
+    }
+
+    modalImg.src = currentModalImages[currentModalIndex];
+    modal.classList.add('show');
+    document.body.style.overflow = 'hidden';
+
+    updateModalNavState();
+  }
+
+  function slideModal(direction, evt) {
+    const btn = evt ? evt.currentTarget : (direction === -1 ? document.getElementById('modalPrevBtn') : document.getElementById('modalNextBtn'));
+
+    if (direction === -1 && currentModalIndex === 0) {
+      triggerRedFlash(btn);
+      return;
+    }
+    if (direction === 1 && currentModalIndex === currentModalImages.length - 1) {
+      triggerRedFlash(btn);
+      return;
+    }
+
+    currentModalIndex += direction;
+    const modalImg = document.getElementById('modalImg');
+    modalImg.src = currentModalImages[currentModalIndex];
+
+    updateModalNavState();
+  }
+
+  function updateModalNavState() {
+    const prevBtn = document.getElementById('modalPrevBtn');
+    const nextBtn = document.getElementById('modalNextBtn');
+
+    if (currentModalImages.length <= 1) {
+      prevBtn.style.display = 'none';
+      nextBtn.style.display = 'none';
+      return;
+    }
+
+    prevBtn.style.display = 'inline-flex';
+    nextBtn.style.display = 'inline-flex';
+
+    if (currentModalIndex === 0) {
+      prevBtn.classList.add('disabled');
+    } else {
+      prevBtn.classList.remove('disabled');
+    }
+
+    if (currentModalIndex === currentModalImages.length - 1) {
+      nextBtn.classList.add('disabled');
+    } else {
+      nextBtn.classList.remove('disabled');
+    }
+  }
+
+  function closeModal() {
+    const modal = document.getElementById('imageModal');
+    modal.classList.remove('show');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', function(e) {
+    const modal = document.getElementById('imageModal');
+    if (!modal.classList.contains('show')) return;
+
+    if (e.key === 'Escape') closeModal();
+    if (e.key === 'ArrowLeft') slideModal(-1);
+    if (e.key === 'ArrowRight') slideModal(1);
+  });
+</script>
+</body>
+</html>
